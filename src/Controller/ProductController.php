@@ -62,61 +62,56 @@ class ProductController extends AbstractController
         // Récupérer tous les produits qui coûte 1500 euros exactement
         $productsPrice = $productRepository->findByPrice(1500);
 
+        // Récupérer le produit le plus cher
+        $productExpensive = $productRepository->findOneGreaterThanPrice(1400);
+
+
         return $this->render('product/demo.html.twig',[
             'products' => $products,
+            'product_id' => $productId,
+            'product_price' => $productsPrice,
+            'product_name' => $productName,
+            'product_expensive' => $productExpensive,
         ]);
     }
 
     /**
      * @Route("/product/delete/{id}",name="delete")
      */
-    public function delete($id)
+    public function delete(Product $product)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $product = $entityManager->getRepository(Product::class)->find($id);
-
         $entityManager->remove($product);
         
         // On exécute la requête (DELETE...)
         $entityManager->flush();
 
-        return $this->render('product/demo.html.twig',[
-            'products' => $product,
-        ]);
+        $this->addFlash('danger','Le produit a été supprimé');
+
+        return $this->redirectToRoute('list');
     }
 
     /**
      * @Route("/product/update/{id}",name="update")
      */
-    public function update($id,Request $request)
+    public function update(Request $request, Product $product)
     {
 
-        $productRepository = $this->getDoctrine()->getRepository(Product::class);
-        $product = $productRepository->find($id);
-
         $form = $this->createForm(ProductType::class,$product);
-
         $form->handleRequest($request);
 
         if ($product != null)
         {
-            $name = $product->getName();
-            $description = $product->getDescription();
-            $price = $product->getPrice();
-
             // Quand le formulaire envoyé est valide
             if ($form->isSubmitted() && $form->isValid())
             {       
                 // On récupère le manager Doctrine pour gérer la BDD
                 $entityManager = $this->getDoctrine()->getManager();
 
-                // On edit l'objet
-                $product->setName($name);
-                $product->setDescription($description);
-                $product->setPrice($price);
-
                 // Exécute la requête (INSERT...)
                 $entityManager->flush();
+
+                $this->addFlash('success','Le produit a été modifié');
 
                 return $this->redirectToRoute('list');
             }
@@ -127,7 +122,7 @@ class ProductController extends AbstractController
         }
 
 
-        return $this->render('product/create.html.twig',[
+        return $this->render('product/update.html.twig',[
             'form' => $form->createView(),
         ]);
     }
@@ -159,13 +154,32 @@ class ProductController extends AbstractController
     public function list()
     {
         // Récupéer le repository de l'entité Product
-        $productRepository = $this->getDoctrine()->getRepository(Product::class);
-
-        // Récupérer tous les produits
-        $products = $productRepository->findAll();
-
+        $products = $this->getDoctrine()
+            ->getRepository(Product::class)
+            ->findAllGreaterThanPrice(0)
+        ;
+        dump($products);
         return $this->render('product/list.html.twig',[
             'products' => $products,
         ]);
+    }
+
+    /**
+     * @Route("/",name="home")
+     *
+     */
+    public function home()
+    {
+        // Récupéer le repository de l'entité Product
+        $products = $this->getDoctrine()
+            ->getRepository(Product::class)
+            ->findMoreExpensive();
+        ;
+
+        dump($products);
+        return $this->render('home.html.twig', [
+            'products' => $products,
+        ]);
+
     }
 }

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
+<h1>Les 4 produits les plus chers</h1>
     <table class="table" style="text-align:center;">
         <thead class="thead-dark">
             <tr>
@@ -23,18 +23,6 @@
             {% endfor %}
         </tbody>
 
-        {% if product_id   %}
-            <h6> Un produit par l'id : {{product_id.name}} </h6>
-        {% endif %}
-        <h6> Un produit par le 'name': {{product_name.name}} </h6>
-        <h5> Un produit par le montant (ici 1500€) :</h5>
-        <ul>
-            {% for product in product_price %}
-                <li> {{product.id}} : {{product.name}} </li>
-            {% endfor %}
-        </ul>
-        
-        <h6> Le produit le plus cher : {{product_expensive.name}} </h6>
     </table>
 
 {% endblock %}

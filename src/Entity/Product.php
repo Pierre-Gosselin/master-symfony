@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -36,6 +37,14 @@ class Product
      */
     private $price;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     *
+     * ^$ permet de dire que la chaine commence strictement par et se termine strictement par
+     * @Assert\Regex("/^[a-z0-9\-]+$/")
+     */
+    private $slug;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,12 +53,15 @@ class Product
     public function getName(): ?string
     {
         return $this->name;
+
     }
 
     public function setName(string $name): self
     {
         $this->name = $name;
-
+        $slugify = new Slugify();
+        $slug = $slugify->slugify($this->name);
+        $this->setSlug($slug);
         return $this;
     }
 
@@ -73,6 +85,23 @@ class Product
     public function setPrice(float $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+    public function setSlug(?string $slug): self
+    {
+        // On évite d'écraser le slug existant par la valeur nulle  
+        if ($slug === null )
+        {
+            return $this;
+        }
+
+        $this->slug = $slug;
 
         return $this;
     }
