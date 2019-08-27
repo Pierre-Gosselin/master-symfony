@@ -27,21 +27,36 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('categorycategory_index') }}">Categories</a>
                         </li>
+                        {% if app.user %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('logout') }}">Logout</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('login') }}">Login</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
         </nav>
         <div class="container mt-5">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}">
-                    {{ message }}
-                </div>
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
+
+            {% if app.user %}
+                Bonjour Monsieur {{ app.user.name }}.
+            {% endif %}
+
             {% block body %}
             {% endblock %}
         </div>
+
         {% block javascripts %}
             <script src="/js/app.js"></script>
             <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

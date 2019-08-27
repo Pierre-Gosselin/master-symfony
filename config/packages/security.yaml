@@ -21,6 +21,8 @@ security:
                 login_path: login
                 check_path: login
 
+            logout: true
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -32,3 +34,4 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/product, roles: ROLE_ADMIN }

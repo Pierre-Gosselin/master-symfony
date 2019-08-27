@@ -45,6 +45,8 @@ class AppFixtures extends Fixture
         // Créer les utilisateurs
         $customer = new Customer();
         $customer->setEmail('pierre.gosselin@orange.fr');
+        $customer->setRoles(['ROLE_ADMIN']);
+        $customer->setUsername('Gosselin');
         // On génère le hash du mot de passe
         $encodedPassword = $this->passwordEncoder->encodePassword($customer,'test');
         $customer->setPassword($encodedPassword);

@@ -33,6 +33,11 @@ class Customer implements UserInterface
      */
     private $password;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -57,7 +62,13 @@ class Customer implements UserInterface
      */
     public function getUsername(): string
     {
+        // Pour changer l'identifiant de connexion, il faut également modifier le fichier securty.yaml
         return (string) $this->email;
+    }
+
+    public function getName(): string
+    {
+        return (string) $this->username;
     }
 
     /**
@@ -109,5 +120,12 @@ class Customer implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
     }
 }
