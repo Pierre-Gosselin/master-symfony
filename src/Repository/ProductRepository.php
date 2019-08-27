@@ -80,6 +80,20 @@ class ProductRepository extends ServiceEntityRepository
         return $queryBuilder->getResult();
     }
 
+    // src/Repository/ProductRepository.php
+    public function findAllWithUser()
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            // leftjoin renvoie tous les produits même ceux sans user
+            ->leftJoin('p.user', 'u')
+
+            // Innerjoin ou join renvoie uniquement les produits avec un user
+            // ->join('p.user','u')
+            ->addSelect('u')
+            ->getQuery();
+
+        return $queryBuilder->execute();
+    }
     // /**
     //  * @return Product[] Returns an array of Product objects
     //  */

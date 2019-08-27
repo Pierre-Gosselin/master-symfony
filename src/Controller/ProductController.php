@@ -156,7 +156,7 @@ class ProductController extends AbstractController
         // Récupéer le repository de l'entité Product
         $products = $this->getDoctrine()
             ->getRepository(Product::class)
-            ->findAllGreaterThanPrice(0)
+            ->findAllWithUser()
         ;
         dump($products);
         return $this->render('product/list.html.twig',[

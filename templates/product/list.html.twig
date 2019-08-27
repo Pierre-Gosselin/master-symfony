@@ -7,6 +7,9 @@
         <div class="col-4 mb-5">
             <div class="card" style="width: 18rem; shadow-sm">
                 <div class="card-body">
+                    {% if product.user %}
+                        <p>{{ product.user.username }}</p>
+                    {% endif %}
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.description }}</p>
                     <p>{{ product.price }} €</p>
