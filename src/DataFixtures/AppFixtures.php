@@ -6,11 +6,20 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\Tag;
+use App\Entity\Customer;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    private $passwordEncoder;
+    // On récupère le service pour encoder les mots de passe dans Symfony
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+    }
+
     public function load(ObjectManager $manager)
     {
         // créer les utilisateurs
@@ -33,8 +42,15 @@ class AppFixtures extends Fixture
             $categories[] = $category; //On met l'instance de coté
         }
 
-        // Créer les tags
+        // Créer les utilisateurs
+        $customer = new Customer();
+        $customer->setEmail('pierre.gosselin@orange.fr');
+        // On génère le hash du mot de passe
+        $encodedPassword = $this->passwordEncoder->encodePassword($customer,'test');
+        $customer->setPassword($encodedPassword);
+        $manager->persist($customer);
 
+        // Créer les tags
         for ( $i = 0; $i < 10; $i++)
         {
             $tag = new Tag();
